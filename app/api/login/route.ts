@@ -11,7 +11,7 @@ export async function POST(request: Request) {
         { status: 401 }
       );
     }
-    const token = createSessionToken();
+    const token = await createSessionToken();
     const res = NextResponse.json({ ok: true });
     res.cookies.set(AUTH.COOKIE_NAME, token, {
       httpOnly: true,
