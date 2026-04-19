@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const search = useSearchParams();
   const from = search.get("from") || "/";
@@ -35,23 +35,31 @@ export default function LoginPage() {
   }
 
   return (
+    <form onSubmit={submit}>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Парола"
+        autoFocus
+        disabled={loading}
+      />
+      <button type="submit" disabled={loading || !password}>
+        {loading ? "Изчакай..." : "Влез"}
+      </button>
+      <p className="err">{err}</p>
+    </form>
+  );
+}
+
+export default function LoginPage() {
+  return (
     <div className="login-box">
       <h1>Promo Dashboard</h1>
       <p>Въведи паролата за достъп</p>
-      <form onSubmit={submit}>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Парола"
-          autoFocus
-          disabled={loading}
-        />
-        <button type="submit" disabled={loading || !password}>
-          {loading ? "Изчакай..." : "Влез"}
-        </button>
-        <p className="err">{err}</p>
-      </form>
+      <Suspense fallback={<div style={{ minHeight: 120 }} />}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
